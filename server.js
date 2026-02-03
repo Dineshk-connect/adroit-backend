@@ -37,7 +37,7 @@ app.post("/enquiry", async (req, res) => {
 
     await resend.emails.send({
       from: "Adroit Website <dk7699097@gmail.com>",
-      to: process.env.COMPANY_EMAIL,
+      to: "dk7699097@gmail.com",
       reply_to: data.email,
       subject: "New Enquiry from Website",
       html: `
