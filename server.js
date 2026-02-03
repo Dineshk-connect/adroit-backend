@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 require('dotenv').config();
 
 const app = express();
@@ -36,11 +37,11 @@ app.post('/enquiry', async (req, res) => {
     },
   });
 
-  await transporter.sendMail({
-  from: `"Adroit Website Enquiry" <${process.env.EMAIL_USER}>`,
-  to: process.env.EMAIL_USER,   // later change to company mail
-  replyTo: data.email,        
-  subject: "New Enquiry from Adroit Website",
+  await resend.emails.send({
+  from: 'Adroit Website <onboarding@resend.dev>',
+  to: process.env.COMPANY_EMAIL,
+  reply_to: data.email,
+  subject: 'New Enquiry from Website',
   html: `
     <h2>New Website Enquiry</h2>
     <p><b>Name:</b> ${data.firstName} ${data.lastName}</p>
@@ -48,10 +49,9 @@ app.post('/enquiry', async (req, res) => {
     <p><b>Phone:</b> ${data.phone}</p>
     <p><b>Message:</b></p>
     <p>${data.message}</p>
-    <hr/>
-    <p>This enquiry was submitted from the Adroit Staffing Solutions website.</p>
   `,
 });
+
 
 
   res.json({ message: "Enquiry sent successfully" });
